@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 
 is_try_run = 0
 
@@ -79,7 +80,8 @@ def run(encode):
                 change [change_file_name] [new_input]
                        run [run_file_name]
                               help
-                        python [file]{clear}""")
+                        python [file]
+                              exit{clear}""")
 
         elif spl[0] == 'python':
             try:
@@ -94,7 +96,10 @@ def run(encode):
             except Exception as e:
                 print(f"{red}error:{e}{clear}")
         elif spl[0] == 'IDE':
-            os.system("start PIDE.py")
+            os.system("start D:\ConsoleOS\Disk\PIDE.exe")
+        elif spl[0] == 'exit':
+            print('exit!')
+            sys.exit()
         elif spl[0] == '':
             print('')
         else:
