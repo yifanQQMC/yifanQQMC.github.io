@@ -53,7 +53,7 @@ def run(encode):
                 print(f"{red}error:file is not in {filepath}{clear}")
         elif spl[0] == 'change':
             if len(spl) < 3:
-                print(f'{red}error！{clear}')
+                print(f'{red}error!{clear}')
                 return
             filepath = os.path.join('disk', spl[1])
             if os.path.exists(filepath):
@@ -100,7 +100,7 @@ def run(encode):
         else:
             print(f'{red}error!{clear}')
     except Exception as e:
-        print(f"{red}error: {e}{clear}")
+        print(f"{red}error:{e}{clear}")
 
 if is_try_run:
     run(input())
