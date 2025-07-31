@@ -96,7 +96,7 @@ def run(encode):
             except Exception as e:
                 print(f"{red}error:{e}{clear}")
         elif spl[0] == 'IDE':
-            os.system("start D:\ConsoleOS\PIDE.exe")
+            os.system("start D:\ConsoleOS\dist\PIDE.exe")
         elif spl[0] == 'exit':
             print('exit!')
             sys.exit()
