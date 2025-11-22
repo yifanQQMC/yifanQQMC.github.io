@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <style>
+		html{
+			background:rgb(18, 1, 94);
+		}
+        .left {
+            position: absolute;
+            border-radius: 30px;
+            background: rgb(173, 231, 250);
+            padding: 10px 20px;
+            margin: 5px;
+            text-decoration: none;
+            color: black;
+        }
+        button {
+            margin: 10px;
+            padding: 8px 16px;
+        }
+        #linkContainer {
+            margin-top: 20px;
+        }
+    </style>
+    <script>
+        function add(showstr, pth) {
+            let obj = document.createElement('a');
+            obj.textContent = showstr;
+            obj.href = pth;
+            obj.className = 'left'; 
+            document.getElementById('linkContainer').appendChild(obj); 
+        }
+    </script>
+</head>
+
+<body>
+    
+    
+    <p id='tilte'>码海工作室,一个普通的工作室.两个喜欢编程的小学生的仓库......</p>
+</body>
+</html>
