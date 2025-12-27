@@ -1,0 +1,862 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>数据存储应用 - 2025</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4361ee;
+            --secondary: #3f37c9;
+            --success: #4cc9f0;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --border-radius: 12px;
+            --box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --transition: all 0.3s ease;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: var(--dark);
+            background: linear-gradient(135deg, #f5f7fa 0%, #e4edf5 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px 0;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+        
+        .logo-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+        }
+        
+        h1 {
+            font-size: 2.8rem;
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+            font-weight: 700;
+        }
+        
+        .subtitle {
+            color: var(--gray);
+            font-size: 1.1rem;
+            margin-top: 10px;
+        }
+        
+        .app-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 25px;
+        }
+        
+        @media (max-width: 900px) {
+            .app-container {
+                grid-template-columns: 1fr;
+            }
+        }
+        
+        .card {
+            background: white;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            padding: 25px;
+            transition: var(--transition);
+        }
+        
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+        
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        
+        .card-title {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        input, select, textarea {
+            width: 100%;
+            padding: 12px 15px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: var(--transition);
+        }
+        
+        input:focus, select:focus, textarea:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.2);
+        }
+        
+        textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+        
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+        
+        .btn-primary {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: var(--secondary);
+        }
+        
+        .btn-secondary {
+            background: #e9ecef;
+            color: var(--dark);
+        }
+        
+        .btn-secondary:hover {
+            background: #dee2e6;
+        }
+        
+        .btn-danger {
+            background: #e63946;
+            color: white;
+        }
+        
+        .btn-danger:hover {
+            background: #c1121f;
+        }
+        
+        .btn-block {
+            display: block;
+            width: 100%;
+        }
+        
+        .btn-group {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+        }
+        
+        .data-container {
+            max-height: 400px;
+            overflow-y: auto;
+            margin-top: 20px;
+            border: 1px solid #eee;
+            border-radius: 8px;
+        }
+        
+        .data-item {
+            padding: 15px;
+            border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .data-item:last-child {
+            border-bottom: none;
+        }
+        
+        .data-key {
+            font-weight: 600;
+            color: var(--primary);
+            margin-bottom: 5px;
+            word-break: break-all;
+        }
+        
+        .data-value {
+            background: #f8f9fa;
+            padding: 10px;
+            border-radius: 6px;
+            font-family: monospace;
+            font-size: 0.95rem;
+            word-break: break-all;
+            white-space: pre-wrap;
+        }
+        
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--gray);
+        }
+        
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            color: #e9ecef;
+        }
+        
+        .storage-selector {
+            display: flex;
+            background: #f0f4ff;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-bottom: 20px;
+        }
+        
+        .storage-option {
+            flex: 1;
+            text-align: center;
+            padding: 12px;
+            cursor: pointer;
+            transition: var(--transition);
+            font-weight: 500;
+        }
+        
+        .storage-option.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .stats-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-top: 20px;
+        }
+        
+        .stat-card {
+            background: #f8f9fa;
+            border-radius: 8px;
+            padding: 15px;
+            text-align: center;
+            border-left: 4px solid var(--primary);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 5px 0;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+        
+        @media (max-width: 600px) {
+            .btn-group {
+                flex-direction: column;
+            }
+            
+            h1 {
+                font-size: 2.2rem;
+            }
+        }
+        
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 15px 25px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            transform: translateX(350px);
+            transition: transform 0.3s ease;
+            z-index: 1000;
+        }
+        
+        .notification.show {
+            transform: translateX(0);
+        }
+        
+        .notification.success {
+            background: #2ecc71;
+        }
+        
+        .notification.error {
+            background: #e74c3c;
+        }
+        
+        .storage-info {
+            background: #e3f2fd;
+            border-radius: 8px;
+            padding: 15px;
+            margin: 15px 0;
+            font-size: 0.95rem;
+            border-left: 4px solid var(--primary);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-database logo-icon"></i>
+                <h1>数据存储应用</h1>
+            </div>
+            <p class="subtitle">使用 JavaScript 实现的本地数据存储解决方案 | 当前日期: 2025年12月27日</p>
+        </header>
+        
+        <div class="app-container">
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-edit"></i> 数据操作</h2>
+                    <span class="storage-type" id="currentStorage">localStorage</span>
+                </div>
+                
+                <div class="storage-selector">
+                    <div class="storage-option active" data-storage="local">
+                        <i class="fas fa-save"></i> localStorage
+                    </div>
+                    <div class="storage-option" data-storage="indexeddb">
+                        <i class="fas fa-server"></i> IndexedDB
+                    </div>
+                </div>
+                
+                <div class="storage-info">
+                    <p><strong>localStorage:</strong> 简单的键值存储，适合小型数据 (5MB 限制)</p>
+                    <p><strong>IndexedDB:</strong> 高级数据库，支持大型结构化数据 (通常 50MB+)</p>
+                </div>
+                
+                <div class="form-group">
+                    <label for="dataKey"><i class="fas fa-key"></i> 数据键名</label>
+                    <input type="text" id="dataKey" placeholder="输入唯一的键名，例如: userSettings">
+                </div>
+                
+                <div class="form-group">
+                    <label for="dataValue"><i class="fas fa-file-alt"></i> 数据值</label>
+                    <textarea id="dataValue" placeholder="输入要存储的数据值 (支持 JSON 格式)"></textarea>
+                </div>
+                
+                <div class="btn-group">
+                    <button class="btn btn-primary" id="saveBtn">
+                        <i class="fas fa-save"></i> 保存数据
+                    </button>
+                    <button class="btn btn-secondary" id="loadBtn">
+                        <i class="fas fa-download"></i> 读取数据
+                    </button>
+                    <button class="btn btn-danger" id="deleteBtn">
+                        <i class="fas fa-trash"></i> 删除数据
+                    </button>
+                </div>
+                
+                <div class="stats-container">
+                    <div class="stat-card">
+                        <div class="stat-value" id="itemCount">0</div>
+                        <div class="stat-label">存储项</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="storageSize">0 KB</div>
+                        <div class="stat-label">使用空间</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-value" id="storageLimit">1.5 GB</div>
+                        <div class="stat-label">存储上限</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="card">
+                <div class="card-header">
+                    <h2 class="card-title"><i class="fas fa-list"></i> 存储数据</h2>
+                    <button class="btn btn-secondary" id="refreshBtn">
+                        <i class="fas fa-sync-alt"></i> 刷新
+                    </button>
+                </div>
+                
+                <div class="data-container" id="dataList">
+                    <div class="empty-state">
+                        <i class="fas fa-inbox"></i>
+                        <h3>暂无存储数据</h3>
+                        <p>添加一些数据后，这里将显示您的存储内容</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <footer>
+            <p>JavaScript 数据存储应用 &copy; 2025 | 基于现代 Web 技术构建</p>
+        </footer>
+    </div>
+    
+    <div class="notification" id="notification"></div>
+
+    <script>
+        // 主应用逻辑
+        document.addEventListener('DOMContentLoaded', () => {
+            // DOM 元素
+            const storageOptions = document.querySelectorAll('.storage-option');
+            const currentStorageEl = document.getElementById('currentStorage');
+            const saveBtn = document.getElementById('saveBtn');
+            const loadBtn = document.getElementById('loadBtn');
+            const deleteBtn = document.getElementById('deleteBtn');
+            const refreshBtn = document.getElementById('refreshBtn');
+            const dataKeyInput = document.getElementById('dataKey');
+            const dataValueInput = document.getElementById('dataValue');
+            const dataListContainer = document.getElementById('dataList');
+            const itemCountEl = document.getElementById('itemCount');
+            const storageSizeEl = document.getElementById('storageSize');
+            const notificationEl = document.getElementById('notification');
+            
+            let currentStorage = 'local'; // 'local' 或 'indexeddb'
+            
+            // 初始化应用
+            function initApp() {
+                // 设置存储类型选择器
+                storageOptions.forEach(option => {
+                    option.addEventListener('click', () => {
+                        storageOptions.forEach(opt => opt.classList.remove('active'));
+                        option.classList.add('active');
+                        currentStorage = option.dataset.storage;
+                        currentStorageEl.textContent = currentStorage === 'local' ? 'localStorage' : 'IndexedDB';
+                        
+                        // 重置表单
+                        dataKeyInput.value = '';
+                        dataValueInput.value = '';
+                        
+                        // 刷新数据列表
+                        refreshDataList();
+                    });
+                });
+                
+                // 事件监听
+                saveBtn.addEventListener('click', saveData);
+                loadBtn.addEventListener('click', loadData);
+                deleteBtn.addEventListener('click', deleteData);
+                refreshBtn.addEventListener('click', refreshDataList);
+                
+                // 初始加载数据
+                refreshDataList();
+            }
+            
+            // 通知系统
+            function showNotification(message, type = 'success') {
+                notificationEl.textContent = message;
+                notificationEl.className = `notification ${type}`;
+                notificationEl.classList.add('show');
+                
+                setTimeout(() => {
+                    notificationEl.classList.remove('show');
+                }, 3000);
+            }
+            
+            // 刷新数据列表
+            function refreshDataList() {
+                if (currentStorage === 'local') {
+                    renderLocalStorageData();
+                } else {
+                    renderIndexedDBData();
+                }
+                updateStats();
+            }
+            
+            // 更新统计信息
+            function updateStats() {
+                if (currentStorage === 'local') {
+                    const items = Object.keys(localStorage).length;
+                    let size = 0;
+                    
+                    for (let key in localStorage) {
+                        size += localStorage[key].length * 2; // 计算字节数
+                    }
+                    
+                    itemCountEl.textContent = items;
+                    storageSizeEl.textContent = formatSize(size);
+                } else {
+                    // IndexedDB 需要异步获取统计信息
+                    getIndexedDBStats().then(stats => {
+                        itemCountEl.textContent = stats.items;
+                        storageSizeEl.textContent = formatSize(stats.size);
+                    });
+                }
+            }
+            
+            // 格式化文件大小
+            function formatSize(bytes) {
+                if (bytes === 0) return '0 Bytes';
+                const k = 1024;
+                const sizes = ['Bytes', 'KB', 'MB', 'GB'];
+                const i = Math.floor(Math.log(bytes) / Math.log(k));
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+            }
+            
+            // ===== localStorage 操作 =====
+            function renderLocalStorageData() {
+                dataListContainer.innerHTML = '';
+                
+                if (Object.keys(localStorage).length === 0) {
+                    dataListContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-inbox"></i>
+                            <h3>localStorage 为空</h3>
+                            <p>尚未存储任何数据</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                for (let i = 0; i < localStorage.length; i++) {
+                    const key = localStorage.key(i);
+                    const value = localStorage.getItem(key);
+                    addDataItemToList(key, value);
+                }
+            }
+            
+            function saveToLocalStorage(key, value) {
+                try {
+                    // 尝试解析 JSON 以验证格式
+                    if (value.trim().startsWith('{') || value.trim().startsWith('[')) {
+                        JSON.parse(value);
+                    }
+                    localStorage.setItem(key, value);
+                    showNotification(`数据已成功保存到 localStorage！`);
+                    refreshDataList();
+                    return true;
+                } catch (error) {
+                    showNotification(`无效的 JSON 格式: ${error.message}`, 'error');
+                    return false;
+                }
+            }
+            
+            function getFromLocalStorage(key) {
+                return localStorage.getItem(key);
+            }
+            
+            function deleteFromLocalStorage(key) {
+                if (localStorage.getItem(key)) {
+                    localStorage.removeItem(key);
+                    showNotification(`数据 "${key}" 已成功删除！`);
+                    refreshDataList();
+                    return true;
+                } else {
+                    showNotification(`未找到键名为 "${key}" 的数据`, 'error');
+                    return false;
+                }
+            }
+            
+            // ===== IndexedDB 操作 =====
+            const DB_NAME = 'DataStorageAppDB';
+            const DB_VERSION = 1;
+            const STORE_NAME = 'dataStore';
+            
+            function openIndexedDB() {
+                return new Promise((resolve, reject) => {
+                    const request = indexedDB.open(DB_NAME, DB_VERSION);
+                    
+                    request.onupgradeneeded = function(event) {
+                        const db = event.target.result;
+                        if (!db.objectStoreNames.contains(STORE_NAME)) {
+                            db.createObjectStore(STORE_NAME, { keyPath: 'key' });
+                        }
+                    };
+                    
+                    request.onsuccess = function(event) {
+                        resolve(event.target.result);
+                    };
+                    
+                    request.onerror = function(event) {
+                        reject(event.target.error);
+                    };
+                });
+            }
+            
+            async function renderIndexedDBData() {
+                dataListContainer.innerHTML = '';
+                
+                try {
+                    const db = await openIndexedDB();
+                    const transaction = db.transaction([STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.getAll();
+                    
+                    request.onsuccess = function() {
+                        if (request.result.length === 0) {
+                            dataListContainer.innerHTML = `
+                                <div class="empty-state">
+                                    <i class="fas fa-inbox"></i>
+                                    <h3>IndexedDB 为空</h3>
+                                    <p>尚未存储任何数据</p>
+                                </div>
+                            `;
+                            return;
+                        }
+                        
+                        request.result.forEach(item => {
+                            addDataItemToList(item.key, item.value);
+                        });
+                    };
+                    
+                    request.onerror = function() {
+                        showNotification('读取 IndexedDB 时出错', 'error');
+                    };
+                    
+                } catch (error) {
+                    showNotification(`打开数据库失败: ${error.message}`, 'error');
+                    dataListContainer.innerHTML = `
+                        <div class="empty-state">
+                            <i class="fas fa-exclamation-triangle"></i>
+                            <h3>数据库错误</h3>
+                            <p>无法访问 IndexedDB: ${error.message}</p>
+                        </div>
+                    `;
+                }
+            }
+            
+            async function saveToIndexedDB(key, value) {
+                try {
+                    // 验证 JSON
+                    if (value.trim().startsWith('{') || value.trim().startsWith('[')) {
+                        JSON.parse(value);
+                    }
+                    
+                    const db = await openIndexedDB();
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    
+                    const request = store.put({ key, value });
+                    
+                    return new Promise((resolve, reject) => {
+                        request.onsuccess = function() {
+                            showNotification(`数据已成功保存到 IndexedDB！`);
+                            refreshDataList();
+                            resolve(true);
+                        };
+                        
+                        request.onerror = function(event) {
+                            showNotification(`保存数据失败: ${event.target.error.message}`, 'error');
+                            reject(event.target.error);
+                        };
+                    });
+                } catch (error) {
+                    showNotification(`保存数据失败: ${error.message}`, 'error');
+                    return false;
+                }
+            }
+            
+            async function getFromIndexedDB(key) {
+                try {
+                    const db = await openIndexedDB();
+                    const transaction = db.transaction([STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.get(key);
+                    
+                    return new Promise((resolve, reject) => {
+                        request.onsuccess = function() {
+                            resolve(request.result ? request.result.value : null);
+                        };
+                        
+                        request.onerror = function(event) {
+                            reject(event.target.error);
+                        };
+                    });
+                } catch (error) {
+                    showNotification(`读取数据失败: ${error.message}`, 'error');
+                    return null;
+                }
+            }
+            
+            async function deleteFromIndexedDB(key) {
+                try {
+                    const db = await openIndexedDB();
+                    const transaction = db.transaction([STORE_NAME], 'readwrite');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const request = store.delete(key);
+                    
+                    return new Promise((resolve, reject) => {
+                        request.onsuccess = function() {
+                            showNotification(`数据 "${key}" 已成功删除！`);
+                            refreshDataList();
+                            resolve(true);
+                        };
+                        
+                        request.onerror = function(event) {
+                            showNotification(`删除数据失败: ${event.target.error.message}`, 'error');
+                            reject(event.target.error);
+                        };
+                    });
+                } catch (error) {
+                    showNotification(`删除数据失败: ${error.message}`, 'error');
+                    return false;
+                }
+            }
+            
+            async function getIndexedDBStats() {
+                try {
+                    const db = await openIndexedDB();
+                    const transaction = db.transaction([STORE_NAME], 'readonly');
+                    const store = transaction.objectStore(STORE_NAME);
+                    const countRequest = store.count();
+                    
+                    return new Promise((resolve) => {
+                        countRequest.onsuccess = function() {
+                            const items = countRequest.result;
+                            let size = 0;
+                            
+                            // 估算大小（不精确，因为 IndexedDB 不提供直接的大小 API）
+                            const getAllRequest = store.getAll();
+                            getAllRequest.onsuccess = function() {
+                                request.result.forEach(item => {
+                                    size += item.key.length * 2;
+                                    size += item.value.length * 2;
+                                });
+                                resolve({ items, size });
+                            };
+                        };
+                    });
+                } catch (error) {
+                    return { items: 0, size: 0 };
+                }
+            }
+            
+            // ===== 通用操作 =====
+            function addDataItemToList(key, value) {
+                const dataItem = document.createElement('div');
+                dataItem.className = 'data-item';
+                
+                // 尝试格式化 JSON
+                let displayValue = value;
+                try {
+                    if (value.trim().startsWith('{') || value.trim().startsWith('[')) {
+                        const parsed = JSON.parse(value);
+                        displayValue = JSON.stringify(parsed, null, 2);
+                    }
+                } catch (e) {
+                    // 不是有效的 JSON，保持原样
+                }
+                
+                dataItem.innerHTML = `
+                    <div class="data-key">${key}</div>
+                    <div class="data-value">${displayValue}</div>
+                `;
+                dataListContainer.appendChild(dataItem);
+            }
+            
+            // 保存数据
+            function saveData() {
+                const key = dataKeyInput.value.trim();
+                const value = dataValueInput.value.trim();
+                
+                if (!key) {
+                    showNotification('请输入数据键名', 'error');
+                    return;
+                }
+                
+                if (!value) {
+                    showNotification('请输入数据值', 'error');
+                    return;
+                }
+                
+                if (currentStorage === 'local') {
+                    saveToLocalStorage(key, value);
+                } else {
+                    saveToIndexedDB(key, value);
+                }
+            }
+            
+            // 读取数据
+            async function loadData() {
+                const key = dataKeyInput.value.trim();
+                
+                if (!key) {
+                    showNotification('请输入要读取的数据键名', 'error');
+                    return;
+                }
+                
+                let value;
+                if (currentStorage === 'local') {
+                    value = getFromLocalStorage(key);
+                } else {
+                    value = await getFromIndexedDB(key);
+                }
+                
+                if (value !== null && value !== undefined) {
+                    dataValueInput.value = value;
+                    showNotification(`成功读取数据: "${key}"`);
+                } else {
+                    showNotification(`未找到键名为 "${key}" 的数据`, 'error');
+                }
+            }
+            
+            // 删除数据
+            function deleteData() {
+                const key = dataKeyInput.value.trim();
+                
+                if (!key) {
+                    showNotification('请输入要删除的数据键名', 'error');
+                    return;
+                }
+                
+                if (currentStorage === 'local') {
+                    deleteFromLocalStorage(key);
+                } else {
+                    deleteFromIndexedDB(key);
+                }
+            }
+            
+            // 初始化应用
+            initApp();
+        });
+    </script>
+</body>
+</html>
+
+                             
