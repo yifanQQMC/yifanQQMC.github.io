@@ -9,7 +9,6 @@
         :root{
             --bg: #0b1220;
             --panel: #0f1724;
-            --accent: #1f2937;
             --muted: #9aa4b2;
             --accent-2: #3b82f6;
             --max-width: 980px;
@@ -26,24 +25,24 @@
             -moz-osx-font-smoothing:grayscale;
             height:100%;
         }
-        /* Fullscreen starfield canvas behind everything */
-        #starfield{
+        /* Fullscreen code-rain canvas behind everything */
+        #coderain{
             position:fixed;
             inset:0;
             z-index:-2;
             width:100%;
             height:100%;
             display:block;
-            background: radial-gradient(ellipse at center, rgba(255,255,255,0.02) 0%, rgba(0,0,0,0) 40%);
+            background: linear-gradient(180deg, rgba(0,0,0,0.35), rgba(0,0,0,0.55));
         }
-        /* subtle nebula overlay */
-        #nebula{
+        /* subtle overlay to soften contrast */
+        #overlay{
             position:fixed;
             inset:0;
             z-index:-1;
             pointer-events:none;
-            background: radial-gradient(circle at 20% 20%, rgba(59,130,246,0.06), transparent 12%),
-                        radial-gradient(circle at 80% 80%, rgba(139,92,246,0.04), transparent 14%);
+            background: radial-gradient(circle at 10% 10%, rgba(59,130,246,0.02), transparent 10%),
+                        radial-gradient(circle at 90% 90%, rgba(139,92,246,0.01), transparent 12%);
             mix-blend-mode: screen;
         }
         .container{
@@ -51,9 +50,9 @@
             margin: 1.5rem auto;
             padding: 1rem;
             position: relative;
-            z-index: 1; /* ensure content is above starfield */
+            z-index: 1; /* ensure content is above background */
         }
-        /* Top title box inspired by darkgodjim001.github.io */
+        /* Top title box */
         #title_box{
             display:flex;
             align-items:center;
@@ -129,7 +128,7 @@
         }
     </style>
     <script>
-        // Avatar click: small playful effect
+        // Avatar click effect
         function OnClickAvatarEvent(){
             const box = document.getElementById('title_box');
             box.animate([
@@ -139,25 +138,24 @@
             ], { duration: 220, easing: 'ease-out' });
         }
 
-        // Starfield animation script
+        // Code-rain (Matrix-like) background script
         (function(){
-            // run after DOM loaded
-            function initStarfield(){
-                const canvas = document.getElementById('starfield');
+            // Respect prefers-reduced-motion
+            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+
+            function initCodeRain(){
+                const canvas = document.getElementById('coderain');
                 if(!canvas) return;
                 const ctx = canvas.getContext('2d');
-                let stars = [];
                 let width = 0, height = 0, DPR = window.devicePixelRatio || 1;
 
-                // Configuration — tweak these to change density and behavior
-                const config = {
-                    starCountPerKpx: 0.9, // number of stars per 1000x1000 px
-                    minSize: 0.3,
-                    maxSize: 1.8,
-                    twinkleSpeedMin: 0.002,
-                    twinkleSpeedMax: 0.008,
-                    baseAlpha: 0.3,
-                };
+                // configuration
+                const chars = '0123456789abcdefgijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*+-/=';
+                const color = '#7CFC00'; // neon green-ish
+                let fontSize = 14;
+                let columns = 0;
+                let drops = [];
+                let rafId = null;
 
                 function resize(){
                     width = canvas.clientWidth || window.innerWidth;
@@ -165,76 +163,64 @@
                     canvas.width = Math.floor(width * DPR);
                     canvas.height = Math.floor(height * DPR);
                     ctx.setTransform(DPR,0,0,DPR,0,0);
-                    resetStars();
+
+                    // adjust font size slightly by width
+                    fontSize = Math.max(10, Math.min(18, Math.floor(width / 80)));
+                    ctx.font = fontSize + 'px monospace';
+                    columns = Math.floor(width / fontSize);
+                    drops = new Array(columns).fill(0).map(()=> Math.floor(Math.random()*height/fontSize));
                 }
 
-                function resetStars(){
-                    stars = [];
-                    const areaKpx = (width * height) / (1000 * 1000);
-                    const count = Math.floor(areaKpx * config.starCountPerKpx * 1000);
-                    for(let i=0;i<count;i++){
-                        stars.push({
-                            x: Math.random() * width,
-                            y: Math.random() * height,
-                            size: config.minSize + Math.random() * (config.maxSize - config.minSize),
-                            alpha: config.baseAlpha + Math.random() * (1 - config.baseAlpha),
-                            twinkle: (Math.random() * (config.twinkleSpeedMax - config.twinkleSpeedMin)) + config.twinkleSpeedMin,
-                            phase: Math.random() * Math.PI * 2
-                        });
-                    }
-                }
-
-                let last = performance.now();
-                function tick(now){
-                    const dt = (now - last) / 1000;
-                    last = now;
-                    ctx.clearRect(0,0,width,height);
-                    // subtle gradient background overlay for depth
-                    const g = ctx.createLinearGradient(0,0,0,height);
-                    g.addColorStop(0, 'rgba(255,255,255,0.02)');
-                    g.addColorStop(1, 'rgba(0,0,0,0.02)');
-                    ctx.fillStyle = g;
+                function draw(){
+                    // translucent background to create trail effect
+                    ctx.fillStyle = 'rgba(0,0,0,0.12)';
                     ctx.fillRect(0,0,width,height);
 
-                    for(let i=0;i<stars.length;i++){
-                        const s = stars[i];
-                        s.phase += s.twinkle * dt * 60; // scaled
-                        const a = Math.max(0, Math.min(1, s.alpha * (0.6 + 0.4 * Math.sin(s.phase))));
-                        ctx.beginPath();
-                        ctx.fillStyle = 'rgba(255,255,255,' + a.toFixed(3) + ')';
-                        // draw as circle with blur effect via shadow (cheap)
-                        ctx.shadowColor = 'rgba(255,255,255,' + (a*0.6).toFixed(3) + ')';
-                        ctx.shadowBlur = Math.min(10, s.size*6);
-                        ctx.arc(s.x, s.y, s.size, 0, Math.PI*2);
-                        ctx.fill();
-                        ctx.shadowBlur = 0;
-                    }
+                    ctx.fillStyle = color;
+                    ctx.textBaseline = 'top';
+                    for(let i=0;i<columns;i++){
+                        const text = chars.charAt(Math.floor(Math.random()*chars.length));
+                        const x = i * fontSize;
+                        const y = drops[i] * fontSize;
 
-                    requestAnimationFrame(tick);
+                        // draw brighter head
+                        ctx.fillStyle = 'rgba(180,255,180,0.95)';
+                        ctx.fillText(text, x, y);
+
+                        // move drop
+                        drops[i]++;
+                        if (drops[i]*fontSize > height && Math.random()>0.975) drops[i]=0;
+                    }
                 }
 
-                window.addEventListener('resize', () => {
-                    // debounce
-                    clearTimeout(canvas._resizeTimer);
-                    canvas._resizeTimer = setTimeout(resize, 120);
-                });
+                function loop(){
+                    draw();
+                    rafId = requestAnimationFrame(loop);
+                }
+
+                // pause when page hidden to save CPU
+                document.addEventListener('visibilitychange', () => {
+                    if (document.hidden){ if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
+                    else { if (!rafId) rafId = requestAnimationFrame(loop); }
+                }, false);
+
+                // debounce resize
+                let t;
+                window.addEventListener('resize', ()=>{ clearTimeout(t); t=setTimeout(resize,120); });
 
                 resize();
-                requestAnimationFrame(tick);
+                rafId = requestAnimationFrame(loop);
             }
 
-            if(document.readyState === 'loading'){
-                document.addEventListener('DOMContentLoaded', initStarfield);
-            } else {
-                initStarfield();
-            }
+            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCodeRain);
+            else initCodeRain();
         })();
     </script>
 </head>
 <body>
-    <!-- starfield canvas and subtle nebula overlay -->
-    <canvas id="starfield" aria-hidden="true"></canvas>
-    <div id="nebula" aria-hidden="true"></div>
+    <!-- code rain canvas and subtle overlay -->
+    <canvas id="coderain" aria-hidden="true"></canvas>
+    <div id="overlay" aria-hidden="true"></div>
 
     <div class="container">
         <div id="title_box" onclick="OnClickAvatarEvent()">
@@ -310,7 +296,7 @@
 
         <footer>
             <p>新年快乐！</p>
-            <p style="color:var(--muted)">如果需要我可以把顶部改成可点击的文字机效果或把配色进一步微调。</p>
+            <p style="color:var(--muted)">如需调整代码雨颜色、密度或在移动端降级，请告诉我我会继续优化。</p>
         </footer>
     </div>
 </body>
