@@ -4,10 +4,14 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>yifanQQ 的游戏库</title>
+    <link rel="icon" href="https://vzge.me/face/DarkGodJim001.png" />
     <style>
         :root{
-            --accent: #FFEEEE;
-            --border: #3b6fb3;
+            --bg: #0b1220;
+            --panel: #0f1724;
+            --accent: #1f2937;
+            --muted: #9aa4b2;
+            --accent-2: #3b82f6;
             --max-width: 980px;
             --gap: 1rem;
         }
@@ -15,37 +19,47 @@
             margin:0;
             padding:0;
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background: #fff;
-            color: #222;
+            background: linear-gradient(180deg,var(--bg), #07101a 120%);
+            color: #e6eef8;
             line-height:1.6;
+            -webkit-font-smoothing:antialiased;
+            -moz-osx-font-smoothing:grayscale;
         }
         .container{
             max-width: var(--max-width);
             margin: 1.5rem auto;
             padding: 1rem;
         }
-        header.site-header{
-            background: var(--accent);
-            border: 4px double var(--border);
-            padding: 1rem 1.25rem;
-            text-align: center;
-            border-radius: 8px;
+        /* Top title box inspired by darkgodjim001.github.io */
+        #title_box{
+            display:flex;
+            align-items:center;
+            gap: .75rem;
+            background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
+            padding: .5rem 1rem;
+            border-radius: 10px;
+            border: 1px solid rgba(255,255,255,0.04);
+            box-shadow: 0 6px 18px rgba(2,6,23,0.6);
         }
-        header.site-header h1{
-            margin: 0;
-            font-size: 1.5rem;
+        #title_box img{
+            width:64px;
+            height:64px;
+            border-radius:50%;
+            cursor:pointer;
+            border:2px solid rgba(255,255,255,0.06);
         }
-        .intro{
-            margin-top: .75rem;
-            color: #2b8a2b; /* green text used previously */
+        #title_box #title_text{
+            font-size:1.25rem;
+            font-weight:600;
+            margin:0;
+            color:#e6eef8;
         }
-        .logo{
-            display:inline-block;
-            margin-top:.5rem;
-            max-width:160px;
-            height:auto;
-            vertical-align:middle;
+        #title_box #subtitle{
+            margin:0;
+            color:var(--muted);
+            font-size:0.85rem;
         }
+
         main.content{
             margin-top:1rem;
             display:grid;
@@ -53,17 +67,18 @@
             gap: var(--gap);
         }
         .card{
-            background: var(--accent);
-            border:4px double var(--border);
+            background: rgba(255,255,255,0.03);
+            border:1px solid rgba(255,255,255,0.04);
             border-radius:8px;
             padding:0.75rem 1rem;
         }
         .card h2{
             margin:0 0 .5rem 0;
             font-size:1.1rem;
+            color:#f1f5f9;
         }
         .games a{
-            color: #003366;
+            color: var(--accent-2);
             text-decoration: none;
         }
         .games a:hover{
@@ -74,24 +89,44 @@
         footer{
             margin-top:1rem;
             font-size:0.9rem;
-            color:#555;
+            color:var(--muted);
             text-align:center;
+        }
+        .logo{
+            display:inline-block;
+            margin-left:auto;
+            max-width:64px;
+            height:auto;
+            vertical-align:middle;
+            border-radius:8px;
+            border:1px solid rgba(255,255,255,0.04);
         }
         @media(min-width:720px){
             main.content{ grid-template-columns: repeat(2, 1fr); }
         }
     </style>
+    <script>
+        // Avatar click: small playful effect (inspired by darkgodjim001's clickAvatar)
+        function OnClickAvatarEvent(){
+            const box = document.getElementById('title_box');
+            box.animate([
+                { transform: 'translateY(0)' },
+                { transform: 'translateY(-6px)' },
+                { transform: 'translateY(0)' }
+            ], { duration: 220, easing: 'ease-out' });
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <header class="site-header">
-            <h1>yifanQQ 的游戏库</h1>
-            <p class="intro">此页面由 xyf 最后编辑于 12月27日 — 本站点属于 码海工作室</p>
-            <a href="码海工作室index.html" title="码海工作室主页">
-                <img class="logo" src="码海LOGO.png" alt="码海工作室 LOGO" />
-            </a>
-            <p class="intro">加入我们：加入申请审核 QQ 邮箱：3852558256@qq.com、3678869403@qq.com</p>
-        </header>
+        <div id="title_box" onclick="OnClickAvatarEvent()">
+            <img src="https://vzge.me/face/DarkGodJim001.png" alt="头像" id="title_img">
+            <div>
+                <p id="title_text">yifanQQ 的游戏库</p>
+                <p id="subtitle">码海工作室 · 游戏与资源汇总</p>
+            </div>
+            <a href="码海工作室index.html" title="码海工作室主页"><img class="logo" src="码海LOGO.png" alt="码海LOGO"></a>
+        </div>
 
         <main class="content">
             <section class="card games">
@@ -157,7 +192,7 @@
 
         <footer>
             <p>新年快乐！</p>
-            <p>如果你希望我进一步：自动生成目录、合并重复链接、或把游戏列表按字母排序，我可以继续优化。</p>
+            <p style="color:var(--muted)">如果需要我可以把顶部改成可点击的文字机效果或把配色进一步微调。</p>
         </footer>
     </div>
 </body>
