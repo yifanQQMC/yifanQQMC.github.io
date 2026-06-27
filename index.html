@@ -1,186 +1,164 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
-    <title>yifanQQ的游戏库</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>yifanQQ 的游戏库</title>
     <style>
-        .header{
-            background-color: #FFEEEE;
-            padding: 25px;
-            text-align: center;
-            font-sise: 18pt;
-            width: 33%;
-            height: 100%;
-            border: 4px double blue;
-            margin: 33%;
+        :root{
+            --accent: #FFEEEE;
+            --border: #3b6fb3;
+            --max-width: 980px;
+            --gap: 1rem;
         }
-        .text{
-            color: green;
+        html,body{
+            margin:0;
+            padding:0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+            background: #fff;
+            color: #222;
+            line-height:1.6;
         }
-        .pr{
-            background-color: #FFEEEE;
-            padding: 25px;
+        .container{
+            max-width: var(--max-width);
+            margin: 1.5rem auto;
+            padding: 1rem;
+        }
+        header.site-header{
+            background: var(--accent);
+            border: 4px double var(--border);
+            padding: 1rem 1.25rem;
             text-align: center;
-            font-sise: 18pt;
-            width: 33%;
-            height: 100%;
-            border: 4px double blue;
-            margin: 33%;
+            border-radius: 8px;
+        }
+        header.site-header h1{
+            margin: 0;
+            font-size: 1.5rem;
+        }
+        .intro{
+            margin-top: .75rem;
+            color: #2b8a2b; /* green text used previously */
+        }
+        .logo{
+            display:inline-block;
+            margin-top:.5rem;
+            max-width:160px;
+            height:auto;
+            vertical-align:middle;
+        }
+        main.content{
+            margin-top:1rem;
+            display:grid;
+            grid-template-columns: 1fr;
+            gap: var(--gap);
+        }
+        .card{
+            background: var(--accent);
+            border:4px double var(--border);
+            border-radius:8px;
+            padding:0.75rem 1rem;
+        }
+        .card h2{
+            margin:0 0 .5rem 0;
+            font-size:1.1rem;
+        }
+        .games a{
+            color: #003366;
+            text-decoration: none;
+        }
+        .games a:hover{
+            text-decoration: underline;
+        }
+        .games ul{ list-style: none; padding:0; margin:0; }
+        .games li{ padding: .25rem 0; }
+        footer{
+            margin-top:1rem;
+            font-size:0.9rem;
+            color:#555;
+            text-align:center;
+        }
+        @media(min-width:720px){
+            main.content{ grid-template-columns: repeat(2, 1fr); }
         }
     </style>
+</head>
 <body>
-    <p>此页面由xyf最后编辑于12月27日</p>
-    <p>本站点属于码海工作室</p>
-    <div class="text">
-        <a href="码海工作室index.html">
-            <img src="码海LOGO.png" alt="码海工作室主页" />
-        </a>
-        <p>加入我们：加入申请审核QQ邮箱：3852558256@qq.com、3678869403@qq.com</p>
+    <div class="container">
+        <header class="site-header">
+            <h1>yifanQQ 的游戏库</h1>
+            <p class="intro">此页面由 xyf 最后编辑于 12月27日 — 本站点属于 码海工作室</p>
+            <a href="码海工作室index.html" title="码海工作室主页">
+                <img class="logo" src="码海LOGO.png" alt="码海工作室 LOGO" />
+            </a>
+            <p class="intro">加入我们：加入申请审核 QQ 邮箱：3852558256@qq.com、3678869403@qq.com</p>
+        </header>
+
+        <main class="content">
+            <section class="card games">
+                <h2>自制类</h2>
+                <ul>
+                    <li><a href="古堡探险.html">古堡探险 (原 逃离古堡)</a></li>
+                    <li><a href="古堡探险(无尽卷轴版).html">古堡探险 (无尽卷轴版)</a></li>
+                    <li><a href="数据储存.html">数据储存</a></li>
+                </ul>
+
+                <h2>MC 类</h2>
+                <ul>
+                    <li><a href="game1.html">我的世界</a></li>
+                    <li><a href="Minecraft V6（我的世界）.html">我的世界3D</a></li>
+                    <li><a href="起床战争.html">起床战争</a></li>
+                    <li><a href="MC1.20.html">MC1.20</a></li>
+                    <li><a href="MC1.17.html">MC1.17</a></li>
+                    <li><a href="MC模组版.html">MC模组版</a></li>
+                    <li><a href="MC3D.html">MC3D版(2)</a></li>
+                </ul>
+
+                <h2>跑酷类</h2>
+                <ul>
+                    <li><a href="钉钉跑酷.html">钉钉跑酷</a></li>
+                    <li><a href="3D跑酷.html">3D跑酷</a></li>
+                    <li><a href="冒险之旅.html">冒险之旅</a></li>
+                    <li><a href="疯狂的自行车.html">疯狂的自行车</a></li>
+                    <li><a href="星球大战.html">星球大战</a></li>
+                    <li><a href="跑酷编辑器.html">跑酷编辑器</a></li>
+                    <li><a href="超级马里奥.html">超级马里奥</a></li>
+                    <li><a href="未知的世界.html">未知的世界</a></li>
+                </ul>
+            </section>
+
+            <section class="card games">
+                <h2>战斗类</h2>
+                <ul>
+                    <li><a href="元气骑士.html">元气骑士</a></li>
+                    <li><a href="坦克大战.html">坦克大战</a></li>
+                    <li><a href="勇士之城.html">勇士之城</a></li>
+                    <li><a href="忍者大战.html">忍者大战</a></li>
+                </ul>
+
+                <h2>休闲类</h2>
+                <ul>
+                    <li><a href="海上生存记.html">海上生存记</a></li>
+                    <li><a href="登山矿车.html">登山矿车</a></li>
+                    <li><a href="RPG探索游戏.html">RPG探索游戏</a></li>
+                    <li><a href="矿工小猫.html">矿工小猫</a></li>
+                </ul>
+
+                <h2>工具 / 文件</h2>
+                <ul>
+                    <li><a href="func.py">System (func.py)</a></li>
+                    <li><a href="PIDE.py">IDE (PIDE.py)</a></li>
+                </ul>
+
+                <h2>Minecraft Server</h2>
+                <p>ip: rainplay.cn:33351 — Game Version: Minecraft 1.8 ~ 1.21.X</p>
+                <p>ip: s2.wemc.cc:14394 — Game Version: Minecraft 1.16.5</p>
+            </section>
+        </main>
+
+        <footer>
+            <p>新年快乐！</p>
+            <p>如果你希望我进一步：自动生成目录、合并重复链接、或把游戏列表按字母排序，我可以继续优化。</p>
+        </footer>
     </div>
-    <p>新年快乐！</p>
-    <div class="header text">
-        <p>自制类:</p>
-        <a href="古堡探险.html">
-            古堡探险(原逃离古堡)
-        </a>
-        <br/>
-        <a href="古堡探险(无尽卷轴版).html">
-            古堡探险(无尽卷轴版)
-        </a>
-        <br/>
-        <a href="数据储存.html">
-            数据储存
-        </a>
-        <p>MC类:</p>
-        <a href="game1.html">
-            我的世界
-        </a>
-        <br/>
-        <a href="Minecraft V6（我的世界）.html">
-            我的世界3D
-        </a>
-        <br/>
-        <a href="起床战争.html">
-            起床战争
-        </a>
-        <br/>
-        <a href="MC1.20.html">
-            MC1.20
-        </a>
-        <br/>
-        <a href="MC1.17.html">
-            MC1.17
-        </a>
-        <br/>
-        <a href="MC模组版.html">
-            MC模组版
-        </a>
-        <br/>
-        <a href="MC3D.html">
-            MC3D版(2)
-        </a>
-        <br/>
-        <p>跑酷类:</p>
-        <a href="钉钉跑酷.html">
-            钉钉跑酷
-        </a>
-        <br/>
-        <a href="3D跑酷.html">
-            3D跑酷
-        </a>
-        <br/>
-        <a href="冒险之旅.html">
-            冒险之旅
-        </a>
-        <br/>
-        <a href="疯狂的自行车.html">
-            疯狂的自行车
-        </a>
-        <br/>
-        <a href="星球大战.html">
-            星球大战
-        </a>
-        <br/>
-         <a href="跑酷编辑器.html">
-            跑酷编辑器
-        </a>
-        <br/>
-        <a href="超级马里奥.html">
-            超级马里奥
-        </a>
-        <br/>
-        <a href="未知的世界.html">
-            未知的世界
-        </a>
-        <br/>
-        <p>战斗类:</p>
-        <a href="元气骑士.html">
-            元气骑士
-        </a>
-        <br/>
-        <a href="坦克大战.html">
-            坦克大战
-        </a>
-        <br/>
-        <a href="勇士之城.html">
-            勇士之城
-        </a>
-        <br/>
-        <a href="忍者大战.html">
-            忍者大战
-        </a>
-        <br/>
-        
-        <p>休闲类:</p>
-        <a href="海上生存记.html">
-            海上生存记
-        </a>
-        <br/>
-        <a href="登山矿车.html">
-            登山矿车
-        </a>
-        <br/>
-         <a href="RPG探索游戏.html">
-            RPG探索游戏
-        </a>
-        <br/>
-        <a href="矿工小猫.html">
-            矿工小猫
-        </a>
-        <p>consoleOS文件</p>
-        <a href="func.py">
-            System
-        </a>
-        <br/>
-        <a href="PIDE.py">
-            IDE
-        </a>
-        <p>
-            MinecraftServer
-        </p>
-        <br/>
-        <p>
-               ip:rainplay.cn:33351   
-               Game Version:Minecraft 1.8~Minecraft 1.21.X
-        </p>
-        <br/>
-        <p>    
-                ip:s2.wemc.cc:14394   
-                Game Version:Minecraft 1.16.5
-        </p>
-    </div>      
 </body>
 </html>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
