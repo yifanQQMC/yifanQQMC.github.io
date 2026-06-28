@@ -1,311 +1,172 @@
 <!DOCTYPE html>
-<html lang="zh-CN">
+<html>
 <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>yifanQQ 的游戏库</title>
-    <link rel="icon" href="./assets/avatar.png" />
+    <title>yifanQQ的游戏库</title>
     <style>
-        :root{
-            --bg: #0b1220;
-            --panel: #0f1724;
-            --muted: #9aa4b2;
-            --accent-2: #3b82f6;
-            --max-width: 980px;
-            --gap: 1rem;
+        .header{
+            background-color: #FFEEEE;
+            padding: 25px;
+            text-align: center;
+            font-sise: 18pt;
+            width: 33%;
+            height: 100%;
+            border: 4px double blue;
+            margin: 33%;
         }
-        html,body{
-            margin:0;
-            padding:0;
-            height:100%;
-            width:100%;
-            overflow-x:hidden;
-            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
-            background: linear-gradient(180deg,var(--bg), #07101a 120%);
-            color: #e6eef8;
-            line-height:1.6;
-            -webkit-font-smoothing:antialiased;
-            -moz-osx-font-smoothing:grayscale;
+        .text{
+            color: green;
         }
-        /* Fullscreen code-rain canvas that fully covers the viewport */
-        #coderain{
-            position:fixed;
-            top:0;
-            left:0;
-            width:100vw;
-            height:100vh;
-            z-index:-9999; /* far behind content but above page background */
-            display:block;
-        }
-        /* subtle overlay to soften contrast */
-        #overlay{
-            position:fixed;
-            top:0; left:0; right:0; bottom:0;
-            z-index:-9998;
-            pointer-events:none;
-            background: radial-gradient(circle at 10% 10%, rgba(59,130,246,0.02), transparent 10%),
-                        radial-gradient(circle at 90% 90%, rgba(139,92,246,0.01), transparent 12%);
-            mix-blend-mode: screen;
-        }
-        .container{
-            max-width: var(--max-width);
-            margin: 1.5rem auto;
-            padding: 1rem;
-            position: relative;
-            z-index: 1; /* ensure content is above background */
-        }
-        /* Top title box */
-        #title_box{
-            display:flex;
-            align-items:center;
-            gap: .75rem;
-            background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
-            padding: .5rem 1rem;
-            border-radius: 10px;
-            border: 1px solid rgba(255,255,255,0.04);
-            box-shadow: 0 6px 18px rgba(2,6,23,0.6);
-        }
-        #title_box img{
-            width:64px;
-            height:64px;
-            border-radius:50%;
-            cursor:pointer;
-            border:2px solid rgba(255,255,255,0.06);
-        }
-        #title_box #title_text{
-            font-size:1.25rem;
-            font-weight:600;
-            margin:0;
-            color:#e6eef8;
-        }
-        #title_box #subtitle{
-            margin:0;
-            color:var(--muted);
-            font-size:0.85rem;
-        }
-
-        main.content{
-            margin-top:1rem;
-            display:grid;
-            grid-template-columns: 1fr;
-            gap: var(--gap);
-        }
-        .card{
-            background: rgba(255,255,255,0.03);
-            border:1px solid rgba(255,255,255,0.04);
-            border-radius:8px;
-            padding:0.75rem 1rem;
-        }
-        .card h2{
-            margin:0 0 .5rem 0;
-            font-size:1.1rem;
-            color:#f1f5f9;
-        }
-        .games a{
-            color: var(--accent-2);
-            text-decoration: none;
-        }
-        .games a:hover{
-            text-decoration: underline;
-        }
-        .games ul{ list-style: none; padding:0; margin:0; }
-        .games li{ padding: .25rem 0; }
-        footer{
-            margin-top:1rem;
-            font-size:0.9rem;
-            color:var(--muted);
-            text-align:center;
-        }
-        .logo{
-            display:inline-block;
-            margin-left:auto;
-            max-width:64px;
-            height:auto;
-            vertical-align:middle;
-            border-radius:8px;
-            border:1px solid rgba(255,255,255,0.04);
-        }
-        @media(min-width:720px){
-            main.content{ grid-template-columns: repeat(2, 1fr); }
+        .pr{
+            background-color: #FFEEEE;
+            padding: 25px;
+            text-align: center;
+            font-sise: 18pt;
+            width: 33%;
+            height: 100%;
+            border: 4px double blue;
+            margin: 33%;
         }
     </style>
-    <script>
-        // Avatar click effect
-        function OnClickAvatarEvent(){
-            const box = document.getElementById('title_box');
-            box.animate([
-                { transform: 'translateY(0)' },
-                { transform: 'translateY(-6px)' },
-                { transform: 'translateY(0)' }
-            ], { duration: 220, easing: 'ease-out' });
-        }
-
-        // Code-rain (Matrix-like) background script
-        (function(){
-            // Respect prefers-reduced-motion
-            if (window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
-
-            function initCodeRain(){
-                const canvas = document.getElementById('coderain');
-                if(!canvas) return;
-                const ctx = canvas.getContext('2d');
-                let width = 0, height = 0, DPR = window.devicePixelRatio || 1;
-
-                // configuration
-                const chars = '0123456789abcdefgijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ@#$%&*+-/=';
-                const color = '#7CFC00'; // neon green-ish
-                let fontSize = 14;
-                let columns = 0;
-                let drops = [];
-                let rafId = null;
-
-                function resize(){
-                    // full viewport size
-                    width = Math.max(document.documentElement.clientWidth || 0, window.innerWidth || 0);
-                    height = Math.max(document.documentElement.clientHeight || 0, window.innerHeight || 0);
-
-                    // set the canvas CSS size to viewport so it visually covers all
-                    canvas.style.width = width + 'px';
-                    canvas.style.height = height + 'px';
-
-                    // set internal pixel buffer according to DPR for sharp rendering
-                    canvas.width = Math.floor(width * DPR);
-                    canvas.height = Math.floor(height * DPR);
-                    ctx.setTransform(DPR,0,0,DPR,0,0);
-
-                    // adjust font size slightly by width
-                    fontSize = Math.max(10, Math.min(18, Math.floor(width / 80)));
-                    ctx.font = fontSize + 'px monospace';
-                    columns = Math.floor(width / fontSize) + 1;
-                    drops = new Array(columns).fill(0).map(()=> Math.floor(Math.random()*height/fontSize));
-                }
-
-                function draw(){
-                    // translucent background to create trail effect (smaller alpha = longer trails)
-                    ctx.fillStyle = 'rgba(0,0,0,0.12)';
-                    ctx.fillRect(0,0,width,height);
-
-                    ctx.textBaseline = 'top';
-                    for(let i=0;i<columns;i++){
-                        const text = chars.charAt(Math.floor(Math.random()*chars.length));
-                        const x = i * fontSize;
-                        const y = drops[i] * fontSize;
-
-                        // draw brighter head and a slightly dimmer body for depth
-                        ctx.fillStyle = 'rgba(180,255,180,0.95)';
-                        ctx.fillText(text, x, y);
-
-                        // move drop
-                        drops[i]++;
-                        if (drops[i]*fontSize > height && Math.random()>0.975) drops[i]=0;
-                    }
-                }
-
-                function loop(){
-                    draw();
-                    rafId = requestAnimationFrame(loop);
-                }
-
-                // pause when page hidden to save CPU
-                document.addEventListener('visibilitychange', () => {
-                    if (document.hidden){ if (rafId) { cancelAnimationFrame(rafId); rafId = null; } }
-                    else { if (!rafId) rafId = requestAnimationFrame(loop); }
-                }, false);
-
-                // debounce resize
-                let t;
-                window.addEventListener('resize', ()=>{ clearTimeout(t); t=setTimeout(resize,120); });
-
-                resize();
-                rafId = requestAnimationFrame(loop);
-            }
-
-            if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', initCodeRain);
-            else initCodeRain();
-        })();
-    </script>
-</head>
 <body>
-    <!-- code rain canvas and subtle overlay covering full viewport -->
-    <canvas id="coderain" aria-hidden="true"></canvas>
-    <div id="overlay" aria-hidden="true"></div>
-
-    <div class="container">
-        <div id="title_box" onclick="OnClickAvatarEvent()">
-            <img src="./assets/avatar.png" alt="头像" id="title_img">
-            <div>
-                <p id="title_text">yifanQQ 的游戏库</p>
-                <p id="subtitle">码海工作室 · 游戏与资源汇总</p>
-            </div>
-            <a href="码海工作室index.html" title="码海工作室主页"><img class="logo" src="码海LOGO.png" alt="码海LOGO"></a>
-        </div>
-
-        <main class="content">
-            <section class="card games">
-                <h2>自制类</h2>
-                <ul>
-                    <li><a href="古堡探险.html">古堡探险 (原 逃离古堡)</a></li>
-                    <li><a href="古堡探险(无尽卷轴版).html">古堡探险 (无尽卷轴版)</a></li>
-                    <li><a href="数据储存.html">数据储存</a></li>
-                </ul>
-
-                <h2>MC 类</h2>
-                <ul>
-                    <li><a href="game1.html">我的世界</a></li>
-                    <li><a href="Minecraft V6（我的世界）.html">我的世界3D</a></li>
-                    <li><a href="起床战争.html">起床战争</a></li>
-                    <li><a href="MC1.20.html">MC1.20</a></li>
-                    <li><a href="MC1.17.html">MC1.17</a></li>
-                    <li><a href="MC模组版.html">MC模组版</a></li>
-                    <li><a href="MC3D.html">MC3D版(2)</a></li>
-                </ul>
-
-                <h2>跑酷类</h2>
-                <ul>
-                    <li><a href="钉钉跑酷.html">钉钉跑酷</a></li>
-                    <li><a href="3D跑酷.html">3D跑酷</a></li>
-                    <li><a href="冒险之旅.html">冒险之旅</a></li>
-                    <li><a href="疯狂的自行车.html">疯狂的自行车</a></li>
-                    <li><a href="星球大战.html">星球大战</a></li>
-                    <li><a href="跑酷编辑器.html">跑酷编辑器</a></li>
-                    <li><a href="超级马里奥.html">超级马里奥</a></li>
-                    <li><a href="未知的世界.html">未知的世界</a></li>
-                </ul>
-            </section>
-
-            <section class="card games">
-                <h2>战斗类</h2>
-                <ul>
-                    <li><a href="元气骑士.html">元气骑士</a></li>
-                    <li><a href="坦克大战.html">坦克大战</a></li>
-                    <li><a href="勇士之城.html">勇士之城</a></li>
-                    <li><a href="忍者大战.html">忍者大战</a></li>
-                </ul>
-
-                <h2>休闲类</h2>
-                <ul>
-                    <li><a href="海上生存记.html">海上生存记</a></li>
-                    <li><a href="登山矿车.html">登山矿车</a></li>
-                    <li><a href="RPG探索游戏.html">RPG探索游戏</a></li>
-                    <li><a href="矿工小猫.html">矿工小猫</a></li>
-                </ul>
-
-                <h2>工具 / 文件</h2>
-                <ul>
-                    <li><a href="func.py">System (func.py)</a></li>
-                    <li><a href="PIDE.py">IDE (PIDE.py)</a></li>
-                </ul>
-
-                <h2>Minecraft Server</h2>
-                <p>ip: rainplay.cn:33351 — Game Version: Minecraft 1.8 ~ 1.21.X</p>
-                <p>ip: s2.wemc.cc:14394 — Game Version: Minecraft 1.16.5</p>
-            </section>
-        </main>
-
-        <footer>
-            <p>新年快乐！</p>
-            <p style="color:var(--muted)">如需调整代码雨颜色、密度或在移动端降级，请告诉我我会继续优化。</p>
-        </footer>
+    <p>此页面由xyf最后编辑于12月27日</p>
+    <p>本站点属于码海工作室</p>
+    <div class="text">
+        <a href="码海工作室index.html">
+            <img src="码海LOGO.png" alt="码海工作室主页" />
+        </a>
+        <p>加入我们：加入申请审核QQ邮箱：3852558256@qq.com、3678869403@qq.com</p>
     </div>
+    <p>新年快乐！</p>
+    <div class="header text">
+        <p>自制类:</p>
+        <a href="古堡探险.html">
+            古堡探险(原逃离古堡)
+        </a>
+        <br/>
+        <a href="古堡探险(无尽卷轴版).html">
+            古堡探险(无尽卷轴版)
+        </a>
+        <br/>
+        <a href="数据储存.html">
+            数据储存
+        </a>
+        <p>MC类:</p>
+        <a href="game1.html">
+            我的世界
+        </a>
+        <br/>
+        <a href="Minecraft V6（我的世界）.html">
+            我的世界3D
+        </a>
+        <br/>
+        <a href="起床战争.html">
+            起床战争
+        </a>
+        <br/>
+        <a href="MC1.20.html">
+            MC1.20
+        </a>
+        <br/>
+        <a href="MC1.17.html">
+            MC1.17
+        </a>
+        <br/>
+        <a href="MC模组版.html">
+            MC模组版
+        </a>
+        <br/>
+        <a href="MC3D.html">
+            MC3D版(2)
+        </a>
+        <br/>
+        <p>跑酷类:</p>
+        <a href="钉钉跑酷.html">
+            钉钉跑酷
+        </a>
+        <br/>
+        <a href="3D跑酷.html">
+            3D跑酷
+        </a>
+        <br/>
+        <a href="冒险之旅.html">
+            冒险之旅
+        </a>
+        <br/>
+        <a href="疯狂的自行车.html">
+            疯狂的自行车
+        </a>
+        <br/>
+        <a href="星球大战.html">
+            星球大战
+        </a>
+        <br/>
+         <a href="跑酷编辑器.html">
+            跑酷编辑器
+        </a>
+        <br/>
+        <a href="超级马里奥.html">
+            超级马里奥
+        </a>
+        <br/>
+        <a href="未知的世界.html">
+            未知的世界
+        </a>
+        <br/>
+        <p>战斗类:</p>
+        <a href="元气骑士.html">
+            元气骑士
+        </a>
+        <br/>
+        <a href="坦克大战.html">
+            坦克大战
+        </a>
+        <br/>
+        <a href="勇士之城.html">
+            勇士之城
+        </a>
+        <br/>
+        <a href="忍者大战.html">
+            忍者大战
+        </a>
+        <br/>
+        
+        <p>休闲类:</p>
+        <a href="海上生存记.html">
+            海上生存记
+        </a>
+        <br/>
+        <a href="登山矿车.html">
+            登山矿车
+        </a>
+        <br/>
+         <a href="RPG探索游戏.html">
+            RPG探索游戏
+        </a>
+        <br/>
+        <a href="矿工小猫.html">
+            矿工小猫
+        </a>
+        <p>consoleOS文件</p>
+        <a href="func.py">
+            System
+        </a>
+        <br/>
+        <a href="PIDE.py">
+            IDE
+        </a>
+        <p>
+            MinecraftServer
+        </p>
+        <br/>
+        <p>
+               ip:rainplay.cn:33351   
+               Game Version:Minecraft 1.8~Minecraft 1.21.X
+        </p>
+        <br/>
+        <p>    
+                ip:s2.wemc.cc:14394   
+                Game Version:Minecraft 1.16.5
+        </p>
+    </div>      
 </body>
 </html>
